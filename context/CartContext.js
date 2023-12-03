@@ -41,8 +41,22 @@ export const CartProvider = ({ children }) => {
       case 'INCREMENT':
         return { ...state, count: state.count + 1 };
       case 'ADD_TO_CART':
-        const updatedItems = [...state.items, action.item];
-        return { ...state, count: state.count + 1, items: updatedItems };
+        const existingItemIndex = state.items.findIndex((item) => item.id === action.item.id);
+
+        if (existingItemIndex !== -1) {
+          // If the item already exists in the cart, create a new array with the updated item
+          const updatedItems = state.items.map((item, index) =>
+            index === existingItemIndex ? { ...item, quantity: item.quantity + 1 } : item
+          );
+
+          return { ...state, count: state.count + 1, items: updatedItems };
+        } else {
+          // If the item is not in the cart, add it with quantity 1
+          const newItem = { ...action.item, quantity: 1 };
+          const updatedItems = [...state.items, newItem];
+
+          return { ...state, count: state.count + 1, items: updatedItems };
+        }
       case 'SET_INITIAL_STATE':
         return { count: action.count, items: action.items };
       case 'CLEAR_CART':
@@ -60,12 +74,26 @@ export const CartProvider = ({ children }) => {
     // Save cart count and items to AsyncStorage whenever they change
     const saveCartState = async () => {
       try {
-        await AsyncStorage.setItem('cartCount', state.count.toString());
-        await AsyncStorage.setItem('cartItems', JSON.stringify(state.items));
+        const { count, items } = state;
+    
+        // Create a copy of items array without circular references
+        const itemsCopy = items.map(({ id, name, price, quantity }) => ({
+          id,
+          name,
+          price,
+          quantity,
+        }));
+    
+        const stateToSave = { count, items: itemsCopy };
+    
+        await AsyncStorage.setItem('cartCount', stateToSave.count.toString());
+        await AsyncStorage.setItem('cartItems', JSON.stringify(stateToSave.items));
       } catch (error) {
         console.error('Error saving cart state to AsyncStorage:', error);
       }
     };
+    
+    
 
     saveCartState();
   }, [state.count, state.items]);

@@ -1,43 +1,59 @@
-// screens/ContactScreen.js
-import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 
 const ContactScreen = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+
+  const handleSendMessage = () => {
+    if (!name || !email || !message) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    // Assuming you have a function to send the message to the server
+    // Replace the following line with your API call or message handling logic
+    sendMessageToServer({ name, email, message });
+
+    // Optionally, you can clear the form fields after sending the message
+    setName('');
+    setEmail('');
+    setMessage();
+
+    Alert.alert('Success', 'Message sent successfully!');
+  };
+
   return (
     <View style={styles.container}>
-      {/* Navigation Bar */}
-      <View style={styles.navBar}>
-        {/* Navigation buttons go here */}
-        {/* ... */}
-      </View>
+      <Text style={styles.heading}>Contact Us</Text>
 
-      {/* Content */}
-      <View style={styles.content}>
-        <Text>Contact Us</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Your Name"
+        value={name}
+        onChangeText={(text) => setName(text)}
+      />
 
-        {/* Contact Form */}
-        <TextInput placeholder="Your Name" style={styles.input} />
-        <TextInput placeholder="Your Email" style={styles.input} />
-        <TextInput placeholder="Your Message" multiline numberOfLines={4} style={styles.input} />
+      <TextInput
+        style={styles.input}
+        placeholder="Your Email"
+        value={email}
+        onChangeText={(text) => setEmail(text)}
+        keyboardType="email-address"
+      />
 
-        <Button title="Submit" onPress={() => alert('Form submitted!')} />
+      <TextInput
+        style={[styles.input, styles.messageInput]}
+        placeholder="Your Message"
+        value={message}
+        onChangeText={(text) => setMessage(text)}
+        multiline
+      />
 
-        {/* Map */}
-        <View style={styles.mapContainer}>
-          {/* Add your map component here */}
-          <Text>Map goes here</Text>
-        </View>
-
-        {/* Additional Description */}
-        <Text style={styles.description}>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero.
-        </Text>
-      </View>
-
-      {/* Footer */}
-      <View style={styles.footer}>
-        <Text>Simple Footer</Text>
-      </View>
+      <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
+        <Text style={styles.sendButtonText}>Send Message</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -45,43 +61,36 @@ const ContactScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  navBar: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  content: {
-    flex: 1,
+  heading: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   input: {
+    width: '100%',
+    height: 40,
+    borderColor: 'gray',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginVertical: 5,
+    marginBottom: 15,
+    paddingLeft: 10,
+  },
+  messageInput: {
+    height: 100,
+  },
+  sendButton: {
+    backgroundColor: '#3498db',
     padding: 10,
-  },
-  mapContainer: {
-    height: 200, // Adjust the height based on your design
-    borderWidth: 1,
-    borderColor: '#ccc',
     borderRadius: 5,
-    marginVertical: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 20,
   },
-  description: {
-    marginVertical: 10,
-  },
-  footer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#ccc',
+  sendButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold',
   },
 });
 

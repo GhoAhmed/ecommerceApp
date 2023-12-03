@@ -15,7 +15,7 @@ const HomeScreen = () => {
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text>Simple Footer</Text>
+        <Text>Welcome to my store</Text>
       </View>
     </View>
   );

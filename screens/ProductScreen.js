@@ -1,12 +1,15 @@
 // screens/ProductScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { getProducts } from '../services/api'; // Import the API functions
 import { useCart } from '../context/CartContext';
+import { useNavigation } from '@react-navigation/native';
 
 const ProductScreen = () => {
   const [products, setProducts] = useState([]);
   const { dispatch } = useCart();
+  
+  const navigation = useNavigation();
 
   useEffect(() => {
     // Fetch products from the API
@@ -19,17 +22,32 @@ const ProductScreen = () => {
 
   const numColumns = 4; // Number of products in a row
 
-  const handleAddToCart = () => {
-    console.log('Adding to cart...');
-    dispatch({ type: 'INCREMENT' });
+  const handleAddToCart = (item) => {
+    console.log('Adding to cart...', item);
+    dispatch({
+      type: 'ADD_TO_CART',
+      item: {
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image : item.image,
+      },
+    });
   };
+  
+  const handleProductPress = (item) => {
+    // Navigate to ProductDetails screen with the selected product
+    navigation.navigate('ProductDetails', { product: item });
+  };
+
   
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.productCard}>
+    <TouchableOpacity style={styles.productCard}  onPress={() => handleProductPress(item)}>
+      <Image source={{ uri: item.image }} style={styles.productImage}/>
       <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.productPrice}>{item.price}</Text>
-      <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
+      <Text style={styles.productPrice}>${item.price}</Text>
+      <TouchableOpacity style={styles.addToCartButton} onPress={() => handleAddToCart(item)}>
         <Text>Add to Cart</Text>
       </TouchableOpacity>
     </TouchableOpacity>
@@ -67,6 +85,11 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     width: '100%', // Adjust the width based on your design
+  },
+  productImage: {
+    width: 100, // Adjust the width and height based on your design
+    height: 100,
+    marginBottom: 5,
   },
   productName: {
     fontSize: 16,
