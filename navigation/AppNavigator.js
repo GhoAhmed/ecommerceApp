@@ -9,6 +9,7 @@ import ContactScreen from '../screens/ContactScreen';
 import Cart from '../screens/Cart';
 import ShopScreen from '../screens/ShopScreen';
 import ProductDetails from '../screens/ProductDetails';
+import ChatScreen from '../screens/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ const AppNavigator = () => {
           <Stack.Screen name="Contact" component={ContactScreen} />
           <Stack.Screen name="Cart" component={Cart} />
           <Stack.Screen name="ProductDetails" component={ProductDetails} />
+          <Stack.Screen name="Chat" component={ChatScreen} />
         </Stack.Navigator>
       </CartProvider>
     </NavigationContainer>

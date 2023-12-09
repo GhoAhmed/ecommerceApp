@@ -32,13 +32,13 @@ const NavBar = () => {
   return (
     <View style={styles.navBar}>
       <TouchableOpacity onPress={() => navigateTo('Home')}>
-        <Text>Home</Text>
+        <Icon name="home" size={30} color="#3498db" />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigateTo('Shop')}>
-        <Text>Shop</Text>
+        <Icon name="th-large" size={30} color="#3498db" />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigateTo('Contact')}>
-        <Text>Contact</Text>
+        <Icon name="phone" size={30} color="#3498db" />
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigateTo('Checkout')}>
         <View style={styles.cartContainer}>
@@ -47,7 +47,7 @@ const NavBar = () => {
         </View>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleLogout}>
-        <Text>Logout</Text>
+        <Icon name="sign-out" size={30} color="#3498db" />
       </TouchableOpacity>
     </View>
   );
