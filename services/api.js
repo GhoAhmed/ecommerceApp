@@ -62,3 +62,15 @@ export const getProducts = async () => {
       throw error;
     }
   };
+
+
+export const fetchAdminUsers = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/admins`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching admin users:', error);
+    throw error;
+  }
+};
