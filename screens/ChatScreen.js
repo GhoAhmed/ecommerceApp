@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
-// Update this import statement
-import { getFirestore, collection, onSnapshot, add, serverTimestamp } from 'firebase/firestore';
-
+import { addDoc, getFirestore, collection, onSnapshot, add, serverTimestamp } from 'firebase/firestore';
 
 // Assuming 'firebase' is your initialized Firebase instance
 import firebase from '../config/firebase';
@@ -11,8 +9,8 @@ const firestore = getFirestore(firebase);
 
 const ChatScreen = ({ route }) => {
   const { admin } = route.params;
-  const userId = 'yourUserId'; // Replace with your actual user ID
-  const userName = 'yourUserName'; // Replace with your actual user name
+  const userId = admin.id.toString(); // Use the admin's ID as the user ID
+  const userName = admin.name; // Use the admin's name as the user name
   const [messages, setMessages] = useState([]);
   const chatRef = collection(firestore, 'chats', userId, 'messages');
 
@@ -23,22 +21,26 @@ const ChatScreen = ({ route }) => {
         return {
           _id: doc.id,
           text: data.text,
-          createdAt: data.createdAt.toDate(),
+          createdAt: data.createdAt ? data.createdAt.toDate() : null,
           user: data.user,
         };
       });
-
+  
+      // Sort messages by createdAt in descending order
+      messages.sort((a, b) => b.createdAt - a.createdAt);
+  
       setMessages(messages);
     });
-
+  
     return () => unsubscribe();
   }, [userId, chatRef]);
+  
 
   const onSend = async (newMessages) => {
     try {
       await Promise.all(
         newMessages.map(async (message) => {
-          await add(chatRef, {
+          await addDoc(chatRef, {
             text: message.text,
             createdAt: serverTimestamp(),
             user: {
@@ -53,6 +55,7 @@ const ChatScreen = ({ route }) => {
       // Handle the error, e.g., show an alert or log it
     }
   };
+  
 
   return (
     <GiftedChat

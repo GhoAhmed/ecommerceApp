@@ -1,27 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { fetchAdminUsers } from '../services/api'; // Update with the correct path
+import { fetchAdminUsers } from '../services/api';
 
 const ContactScreen = () => {
   const [admins, setAdmins] = useState([]);
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Fetch admin users when the component mounts
     const fetchAdmins = async () => {
       try {
         const data = await fetchAdminUsers();
         setAdmins(data.admins);
       } catch (error) {
-        // Handle error
         console.error('Error fetching admin users:', error);
       }
     };
-  
+
     fetchAdmins();
   }, []);
-  
 
   const handleChatPress = (admin) => {
     // Navigate to the ChatScreen and pass the selected admin
@@ -29,11 +26,10 @@ const ContactScreen = () => {
   };
 
   const renderAdminItem = ({ item }) => {
-  
     if (!item || typeof item !== 'object' || !item.name) {
-      return null; // or handle the case appropriately
+      return null;
     }
-  
+
     return (
       <TouchableOpacity
         style={styles.adminItem}
