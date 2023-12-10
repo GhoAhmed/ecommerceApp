@@ -64,13 +64,19 @@ export const getProducts = async () => {
   };
 
 
-export const fetchAdminUsers = async () => {
+
+
+export const fetchUsers = async (userId) => {
   try {
-    const response = await fetch(`${BASE_URL}/admins`);
+    const response = await fetch(`${BASE_URL}/users`);
     const data = await response.json();
-    return data;
+
+    // Exclude the current user from the list
+    const filteredUsers = data.users.filter(user => user.id !== userId);
+
+    return { users: filteredUsers };
   } catch (error) {
-    console.error('Error fetching admin users:', error);
+    console.error('Error fetching users:', error);
     throw error;
   }
 };

@@ -31,49 +31,37 @@ const Auth = () => {
   const handleSignin = async () => {
     try {
       const result = await signin(email, password);
-       // Check if the signin was successful
-    if (result.token) {
-      // Assuming your API returns a token upon successful signin
-      const { token } = result;
-
-      // Store the authentication token in AsyncStorage
-      await AsyncStorage.setItem('authToken', token);
-
-      // Redirect to HomeScreen upon successful signin
-      navigation.navigate('Home');
-    } else {
-      // Display an alert for incorrect email or password
-      Alert.alert('Signin Error', 'Invalid email or password. Please try again.');
+      if (result.token) {
+        const { token, type } = result;
+        await AsyncStorage.setItem('authToken', token);
+        await AsyncStorage.setItem('type', type);
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Signin Error', 'Invalid email or password. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error signing in:', error);
+      Alert.alert('Signin Error', 'An error occurred during signin. Please try again.');
     }
-  } catch (error) {
-    console.error('Error signing in:', error);
-    // Display a generic error message to the user
-    Alert.alert('Signin Error', 'An error occurred during signin. Please try again.');
-  }
   };
-
+  
   const handleSignup = async () => {
     try {
       const result = await signup(name, email, password);
-
-      // Check for error response from the API
-      if (result.error) {
-        Alert.alert('Signup Error', result.error);
-        return;
+      if (result.token) {
+        const { token, type } = result;
+        await AsyncStorage.setItem('authToken', token);
+        await AsyncStorage.setItem('type', type);
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Signup Error', 'An error occurred during signup. Please try again.');
       }
-
-      // Assuming your API returns a token upon successful signup
-      const { token } = result;
-
-      // Store the authentication token in AsyncStorage
-      await AsyncStorage.setItem('authToken', token);
-
-      // Redirect to HomeScreen upon successful signup
-      navigation.navigate('Home');
     } catch (error) {
+      console.error('Error signing up:', error);
       Alert.alert('Signup Error', 'An error occurred during signup. Please try again.');
     }
   };
+  
 
   return (
     <View style={styles.container}>

@@ -2,18 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { GiftedChat } from 'react-native-gifted-chat';
 import { addDoc, getFirestore, collection, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { Audio } from 'expo-av';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons or any other icon library
-
-// Assuming 'firebase' is your initialized Firebase instance
+import { View, TouchableOpacity, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import firebase from '../config/firebase';
 
 const firestore = getFirestore(firebase);
 
 const ChatScreen = ({ route }) => {
-  const { admin } = route.params;
-  const userId = admin.id.toString(); // Use the admin's ID as the user ID
-  const userName = admin.name; // Use the admin's name as the user name
+  const { contact } = route.params;
+  const userId = contact.id.toString();
+  const userName = contact.name;
   const [messages, setMessages] = useState([]);
   const chatRef = collection(firestore, 'chats', userId, 'messages');
   const [sound, setSound] = useState();
@@ -55,7 +53,6 @@ const ChatScreen = ({ route }) => {
       );
     } catch (error) {
       console.error('Error sending message:', error);
-      // Handle the error, e.g., show an alert or log it
     }
   };
 
@@ -64,9 +61,7 @@ const ChatScreen = ({ route }) => {
   }, [sound]);
 
   const startCall = async () => {
-    const { sound } = await Audio.Sound.createAsync(
-      require('../sounds/dark-mode.mp3')
-    );
+    const { sound } = await Audio.Sound.createAsync(require('../sounds/dark-mode.mp3'));
     setSound(sound);
     await sound.playAsync();
   };
@@ -93,6 +88,8 @@ const ChatScreen = ({ route }) => {
           </TouchableOpacity>
         )}
       </View>
+      {/* Display the recipient's name */}
+      <Text style={{ textAlign: 'center', fontSize: 18, fontWeight: 'bold' }}>{userName}</Text>
       {/* GiftedChat component remains unchanged */}
       <GiftedChat
         messages={messages}
